@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from functools import wraps
 
 import jwt
@@ -26,7 +26,7 @@ def token_required(f):
         if not token:
             return make_response('a valid token is missing', 400)
         try:
-            data = jwt.decode("a" + token, app.config['SECRET_KEY'], algorithms=[HASH_ALGORITHM])
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=[SIGN_ALGORITHM])
             user_id = ObjectId(data["id"])
             current_user = User.objects(id=user_id)[0]
         except jwt.DecodeError:
@@ -43,6 +43,6 @@ def create_token(user_id: ObjectId):
     """Create jwt token for a user with given id."""
     return jwt.encode({
             'id': str(user_id),
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=45)},
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=120)},
             app.config['SECRET_KEY'],
-            HASH_ALGORITHM)
+            SIGN_ALGORITHM)

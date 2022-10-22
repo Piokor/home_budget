@@ -11,7 +11,8 @@ class BudgetSharing(Document):
     shared_to_user_id = ObjectIdField(required=True)
 
 
-def get_budgets_shared_with_user(user_id: ObjectId):
+def get_budgets_shared_with_user(user_id: ObjectId) -> list[Budget]:
+    """Returns list of Budget documents that were shared with given user"""
     shared_budgets_ids = [sharing.budget_id for sharing in BudgetSharing.objects(shared_to_user_id=user_id)]
     budgets = Budget.objects(id__in=shared_budgets_ids)
-    return budgets.to_json()
+    return budgets

@@ -5,17 +5,16 @@ from mongoengine import ValidationError
 from home_budget import app
 from home_budget.auth import token_required
 from home_budget.db.budget_sharing import BudgetSharing, get_budgets_shared_with_user
-from home_budget.db.budgets import Budget
-from home_budget.views.validation import validate_share_budget_params
+from home_budget.db.budgets import Budget, budgets_with_transactions
+from home_budget.views.validation import validate_share_budget_params, required_fields
 
 
 @app.route('/create_budget', methods=['POST'])
+@required_fields("title")
 @token_required
 def create_budget(current_user):
     """Create a budget view."""
     data = request.get_json()
-    if "title" not in data:
-        return make_response('budget title required', 400)
     description = data.get("description")
 
     try:
@@ -28,12 +27,11 @@ def create_budget(current_user):
 
 
 @app.route('/share_budget', methods=['POST'])
+@required_fields("budget_id", "other_user_id")
 @token_required
 def share_budget(current_user):
     """Share a budget with a different user."""
     data = request.get_json()
-    if "budget_id" not in data or "other_user_id" not in data:
-        return make_response('budget or other user id not sent', 400)
     budget_id_str, other_user_id_str = data["budget_id"], data["other_user_id"]
 
     valid, message, code = validate_share_budget_params(current_user, budget_id_str, other_user_id_str)
@@ -52,12 +50,11 @@ def share_budget(current_user):
 @token_required
 def get_budgets(current_user):
     """Get list of users budgets and list of budgets shared with him."""
-
-    own_budgets = Budget.objects(owner_id=current_user.id).to_json()
+    own_budgets = Budget.objects(owner_id=current_user.id)
     shared_budgets = get_budgets_shared_with_user(current_user.id)
     budget_lists = {
-        "own": own_budgets,
-        "shared": shared_budgets
+        "own": budgets_with_transactions(own_budgets),
+        "shared": budgets_with_transactions(shared_budgets)
     }
 
     return make_response(budget_lists, 200)

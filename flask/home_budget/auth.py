@@ -4,14 +4,12 @@ from functools import wraps
 import jwt
 from flask import request, make_response
 from bson import ObjectId
-from werkzeug.security import generate_password_hash
 
 from home_budget import app
 from home_budget.db.users import User
 
 
 SIGN_ALGORITHM = "HS256"
-HASH_ALGORITHM = "sha256"
 
 
 def token_required(f):
@@ -48,8 +46,3 @@ def create_token(user_id: ObjectId):
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=45)},
             app.config['SECRET_KEY'],
             HASH_ALGORITHM)
-
-
-def hash_password(password: str) -> str:
-    """Hashes password for db input."""
-    return generate_password_hash(password, method=HASH_ALGORITHM)

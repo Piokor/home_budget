@@ -10,7 +10,7 @@ from home_budget.auth import create_token
 from home_budget.views.validation import required_fields
 
 
-@app.route('/register', methods=['POST'])
+@app.route('/api/register', methods=['POST'])
 @required_fields("name", "password")
 def signup_user():
     """Sign up view. If successful creates a new user in the db."""
@@ -27,7 +27,7 @@ def signup_user():
     return make_response('registered successfully', 200)
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login_user():
     """Login view. If successful returns a new jwt token."""
     auth = request.authorization
@@ -44,10 +44,3 @@ def login_user():
         return make_response({'token': token}, 200)
 
     return make_response('could not verify', 401)
-
-@app.route('/')
-def index():
-    return jsonify(
-        status=True,
-        message='Welcome to the Dockerized Flask MongoDB app!'
-    )

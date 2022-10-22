@@ -9,7 +9,7 @@ from home_budget.db.budgets import Budget, budgets_with_transactions
 from home_budget.views.validation import validate_share_budget_params, required_fields
 
 
-@app.route('/create_budget', methods=['POST'])
+@app.route('/api/create_budget', methods=['POST'])
 @required_fields("title")
 @token_required
 def create_budget(current_user):
@@ -26,7 +26,7 @@ def create_budget(current_user):
     return make_response(new_budget.to_json(), 200)
 
 
-@app.route('/share_budget', methods=['POST'])
+@app.route('/api/share_budget', methods=['POST'])
 @required_fields("budget_id", "other_user_id")
 @token_required
 def share_budget(current_user):
@@ -46,7 +46,7 @@ def share_budget(current_user):
     return make_response(new_sharing.to_json(), 200)
 
 
-@app.route('/budgets', methods=['GET'])
+@app.route('/api/budgets', methods=['GET'])
 @token_required
 def get_budgets(current_user):
     """Get list of users budgets and list of budgets shared with him."""

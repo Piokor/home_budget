@@ -3,7 +3,7 @@ services:
 
   flask:
     build:
-      context: flask
+      context: app
     container_name: flask
     restart: unless-stopped
     environment:
@@ -21,6 +21,7 @@ services:
       - backend
     ports:
       - "5000:5000"
+#      - "80:5000"
 
   mongodb:
     image: mongo:4.0.8

@@ -6,7 +6,7 @@ from home_budget.db.users import User
 from home_budget.views import required_fields
 
 
-@app.route('/users', methods=['GET'])
+@app.route('/api/api/users', methods=['GET'])
 @required_fields("query_str")
 @token_required
 def get_users(current_user):

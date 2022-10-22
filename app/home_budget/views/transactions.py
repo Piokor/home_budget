@@ -7,7 +7,7 @@ from home_budget.db.transactions import Transaction
 from home_budget.views.validation import validate_transaction, required_fields
 
 
-@app.route('/create_transaction', methods=['POST'])
+@app.route('/api/create_transaction', methods=['POST'])
 @required_fields("title", "type", "amount", "budget_id", "category", "currency")
 @token_required
 def create_transaction(current_user):

@@ -1,5 +1,6 @@
-from flask import request, make_response
+from flask import request, make_response, jsonify
 from mongoengine import ValidationError
+from mongoengine.errors import ValidationError, NotUniqueError
 from pymongo.errors import DuplicateKeyError
 from werkzeug.security import check_password_hash
 
@@ -17,6 +18,8 @@ def signup_user():
     try:
         create_user(data['name'], data['password'])
     except DuplicateKeyError:
+        return make_response('username already taken', 400)
+    except NotUniqueError:
         return make_response('username already taken', 400)
     except ValidationError:
         return make_response('incorrect parameter format', 400)
@@ -41,3 +44,10 @@ def login_user():
         return make_response({'token': token}, 200)
 
     return make_response('could not verify', 401)
+
+@app.route('/')
+def index():
+    return jsonify(
+        status=True,
+        message='Welcome to the Dockerized Flask MongoDB app!'
+    )

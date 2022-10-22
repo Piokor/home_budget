@@ -1,8 +1,7 @@
 from flask import request, make_response
-from werkzeug.security import check_password_hash
 
 from home_budget import app
-from home_budget.auth import token_required, create_token
+from home_budget.auth import token_required
 from home_budget.db.users import User
 from home_budget.views import required_fields
 

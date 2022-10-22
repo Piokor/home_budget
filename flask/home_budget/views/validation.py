@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Optional, ClassVar
+from typing import Optional
 
 from bson import ObjectId
 from bson.errors import InvalidId

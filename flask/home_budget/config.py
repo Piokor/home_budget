@@ -1,6 +1,6 @@
 import os
 
-FLASK_ENV = os.environ["APP_ENV"] or "dev"
+FLASK_ENV = os.environ.get("APP_ENV") or "dev"
 SECRET_KEY = "secret"
 
 if FLASK_ENV == "prod":

@@ -4,11 +4,28 @@
       v-if="budget"
       :budget="budget"
       class="mb-5"
-      />
-    
-    <div class="text-h6">
+    />
+
+    <div class="text-h6 mb-4">
       Incomes & Expenses
+    
+      <v-icon @click="getBudget">
+        mdi-refresh
+      </v-icon>
     </div>
+  
+    <TransactionTable
+      v-if="budget"
+      class="mb-5"
+      :transactions="incomes"
+      :type="'Incomes'"
+    />
+  
+    <TransactionTable
+      v-if="budget"
+      :transactions="expenses"
+      :type="'Expenses'"
+    />
     
     <TransactionCreator 
       :budgetId="budgetId" 
@@ -21,10 +38,11 @@
 import {getBudget} from '@/api/budgets'
 import BudgetDescription from '../components/BudgetDescription.vue';
 import TransactionCreator from '../components/TransactionCreator.vue';
+import TransactionTable from '../components/TransactionTable.vue';
 export default {
   name: 'App',
 
-  components: {BudgetDescription, TransactionCreator},
+  components: {BudgetDescription, TransactionCreator, TransactionTable},
 
   mounted() {
     if(!this.$route.query.id) {
@@ -38,7 +56,9 @@ export default {
   data() {
     return {
       budget: null,
-      budgetId: null
+      budgetId: null,
+      incomes: [],
+      expenses: []
     }
   },
 
@@ -47,6 +67,8 @@ export default {
       const res = await getBudget(this.budgetId);
       if(res.status == 200) {
         this.budget = res.data;
+        this.incomes = res.data.transactions.filter(t => t.type == "income");
+        this.expenses = res.data.transactions.filter(t => t.type == "expenses");
       }
     }
   }

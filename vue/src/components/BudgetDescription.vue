@@ -17,6 +17,10 @@
 
 <script>
 export default {
-  props: ["budget"]
+  props: ["budget"],
+
+  methods: {
+
+  }
 };
 </script>

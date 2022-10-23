@@ -16,7 +16,7 @@
       :headers="headers"
       :items="transactions"
       :items-per-page="5"
-      :no-data-text="`This budget does't have any ${type}`"
+      :no-data-text="`This budget does't have any ${type.toLowerCase()}`"
       group-by="category"
       :search="search"
       class="elevation-1"

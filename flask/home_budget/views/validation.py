@@ -83,6 +83,27 @@ def validate_password(password: str) -> tuple[bool, Optional[str], Optional[int]
     return True, None, None
 
 
+def validate_get_budget(current_user: User, budget_id_str: str) -> tuple[bool, Optional[str], Optional[int]]:
+    """
+    Params of get budget request. Returns 3 values: boolean result, message in case of failure and code in case of failure
+    """
+    if type(budget_id_str) is not str:
+        return False, "incorrect id format", 400
+
+    if not valid_objectid(budget_id_str):
+        return False, "invalid budget id", 400
+    budget_id = ObjectId(budget_id_str)
+
+    if not check_if_exists(budget_id, Budget):
+        return False, "budget with given id not found", 400
+
+    existing_sharing = BudgetSharing.objects(shared_to_user_id=current_user.id, budget_id=budget_id)
+    if len(existing_sharing) != 0:
+        return False, "given budget is not shared with given user", 400
+
+    return True, None, None
+
+
 def valid_objectid(id_str: str) -> bool:
     """Validate if string is a valid bson object id."""
     try:

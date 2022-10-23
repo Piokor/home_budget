@@ -1,16 +1,23 @@
-import { request } from './utils';
+import { postRequest, getRequest } from './utils';
 
 async function getBudgets() {
-    return request(
-        'get',
+    return getRequest(
         '/budgets',
         {}
     )
 }
 
+async function getBudget(id) {
+    return getRequest(
+        '/budget',
+        {
+            id: id
+        }
+    )
+}
+
 async function createBudget(title, description) {
-    return request(
-        'post',
+    return postRequest(
         '/create_budget',
         {
             title: title,
@@ -19,4 +26,4 @@ async function createBudget(title, description) {
     )
 }
 
-export {getBudgets, createBudget}
+export {getBudgets, createBudget, getBudget}

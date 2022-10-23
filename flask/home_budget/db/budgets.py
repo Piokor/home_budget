@@ -12,14 +12,14 @@ class Budget(Document):
     owner_id = ObjectIdField(required=True)
 
 
-def budget_with_transactions(budget: Budget, include_usernames: bool) -> dict:
+def budget_with_transactions(budget: Budget, include_username: bool = False) -> dict:
     """Returns dict with budget, and it's transactions as json strings"""
     transactions_str = Transaction.objects(budget_id=budget.id).to_json()
     transactions = json.loads(transactions_str)
 
     budget_dict = json.loads(budget.to_json())
     budget_dict["transactions"] = transactions
-    if include_usernames:
+    if include_username:
         budget_dict["owner_name"] = get_budget_owner_name(budget)
 
     return budget_dict

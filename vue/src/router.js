@@ -15,6 +15,11 @@ const routes = [
         component: () => import('./views/LoginPage.vue')
     },
     {
+        path: '/budget',
+        name: 'Budget',
+        component: () => import('./views/BudgetPage.vue')
+    },
+    {
         path: '*',
         redirect: '/'
     }

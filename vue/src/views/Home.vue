@@ -1,10 +1,20 @@
 <template>
   <div class="pa-10">
-    <BudgetCreator @budgetCreated="getBudgets"/>
+    <BudgetCreator 
+      @budgetCreated="getBudgets"
+    />
 
-    <BudgetTable :own="true" ref="ownTable"  class="mt-4"/>
+    <BudgetTable 
+      :own="true" 
+      ref="ownTable"  
+      class="mt-4"
+    />
 
-    <BudgetTable :own="false" ref="sharedTable" class="mt-4"/>
+    <BudgetTable 
+      :own="false" 
+      ref="sharedTable" 
+      class="mt-4"
+    />
   </div>
 </template>
 

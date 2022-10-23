@@ -5,8 +5,8 @@ from mongoengine import ValidationError
 from home_budget import app
 from home_budget.auth import token_required
 from home_budget.db.budget_sharing import BudgetSharing, get_budgets_shared_with_user
-from home_budget.db.budgets import Budget, budgets_with_transactions
-from home_budget.views.validation import validate_share_budget_params, required_fields
+from home_budget.db.budgets import Budget, budget_with_transactions, budgets_with_transactions
+from home_budget.views.validation import validate_share_budget_params, required_fields, validate_get_budget
 
 
 @app.route('/api/create_budget', methods=['POST'])
@@ -58,3 +58,21 @@ def get_budgets(current_user):
     }
 
     return make_response(budget_lists, 200)
+
+
+@app.route('/api/budget', methods=['GET'])
+@token_required
+def get_budget(current_user):
+    """Get information about a single budget"""
+    budget_id = request.args.get("id")
+    if budget_id is None:
+        return make_response("id param is required", 400)
+
+    valid, message, code = validate_get_budget(current_user, budget_id)
+    if not valid:
+        return make_response(message, code or 400)
+
+    budget = Budget.objects(id=budget_id)[0]
+    budget_dict = budget_with_transactions(budget, True)
+
+    return make_response(budget_dict, 200)

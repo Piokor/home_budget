@@ -3,7 +3,7 @@ services:
 
   flask:
     build:
-      context: app
+      context: flask
     container_name: flask
     restart: unless-stopped
     environment:
@@ -35,6 +35,19 @@ services:
       - mongodbdata:/data/db
     networks:
       - backend
+ 
+  vue:
+    container_name: vue
+    hostname: vue
+    restart: always
+    build:
+      context: vue
+    depends_on:
+      - flask
+    networks:
+      - frontend
+    ports:
+      - 80:80
 
 networks:
   frontend:

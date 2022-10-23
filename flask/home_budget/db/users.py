@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash
 
 class User(Document):
     """Db model representing single app user."""
-    name = StringField(max_length=50, required=True, unique=True)
+    name = StringField(min_length=3, max_length=50, required=True, unique=True)
     password = StringField(max_length=100, required=True)
 
 

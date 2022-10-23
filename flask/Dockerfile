@@ -1,12 +1,3 @@
-FROM node:12.2.0-alpine as build-vue
-
-WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
-COPY vue/package.json /app/package.json
-RUN npm install
-COPY vue .
-RUN npm run build
-
 FROM python:3.9-alpine
 
 ENV GROUP_ID=1000 \
@@ -14,12 +5,12 @@ ENV GROUP_ID=1000 \
 
 WORKDIR /code
 
-ADD home_budget/requirements.txt .
+ADD requirements.txt .
 RUN pip install -r requirements.txt
 RUN pip install gunicorn
 
-ADD . .
-COPY --from=build-vue /app/dist /code/home_budget/templates/dist
+ADD ./application.py .
+ADD ./home_budget ./home_budget
 
 RUN addgroup -g $GROUP_ID www
 RUN adduser -D -u $USER_ID -G www www -s /bin/sh

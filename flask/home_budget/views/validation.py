@@ -70,6 +70,19 @@ def validate_transaction(transaction: dict, current_user: User) -> tuple[bool, O
     return True, None, None
 
 
+def validate_password(password: str) -> tuple[bool, Optional[str], Optional[int]]:
+    """
+    Validate user password. Returns 3 values: boolean result, message in case of failure and code in case of failure
+    """
+    if type(password) is not str:
+        return False, "incorrect password format", 400
+
+    if len(password) < 3 or len(password) > 50:
+        return False, "incorrect password length", 400
+
+    return True, None, None
+
+
 def valid_objectid(id_str: str) -> bool:
     """Validate if string is a valid bson object id."""
     try:

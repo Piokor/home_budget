@@ -7,7 +7,7 @@ from werkzeug.security import check_password_hash
 from home_budget import app
 from home_budget.db.users import User, create_user
 from home_budget.auth import create_token
-from home_budget.views.validation import required_fields
+from home_budget.views.validation import validate_password, required_fields
 
 
 @app.route('/api/register', methods=['POST'])
@@ -15,8 +15,14 @@ from home_budget.views.validation import required_fields
 def signup_user():
     """Sign up view. If successful creates a new user in the db."""
     data = request.get_json()
+
+    password = data['password']
+    valid, message, code = validate_password(password)
+    if not valid:
+        return make_response(message, code or 400)
+
     try:
-        create_user(data['name'], data['password'])
+        create_user(data['name'], password)
     except DuplicateKeyError:
         return make_response('username already taken', 400)
     except NotUniqueError:

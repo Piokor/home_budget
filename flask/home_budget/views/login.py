@@ -34,19 +34,18 @@ def signup_user():
 
 
 @app.route('/api/login', methods=['POST'])
+@required_fields("username", "password")
 def login_user():
     """Login view. If successful returns a new jwt token."""
-    auth = request.authorization
-    if not auth or not auth.username or not auth.password:
-        return make_response('could not verify', 401)
+    auth = request.get_json()
 
     try:
-        user = User.objects(name=auth.username)[0]
+        user = User.objects(name=auth["username"])[0]
     except IndexError:
-        return make_response('user associated with that token do not exists', 400)
+        return make_response('incorrect username/password', 400)
 
-    if check_password_hash(user.password, auth.password):
+    if check_password_hash(user.password, auth["password"]):
         token = create_token(user.id)
         return make_response({'token': token}, 200)
 
-    return make_response('could not verify', 401)
+    return make_response('incorrect username/password', 401)

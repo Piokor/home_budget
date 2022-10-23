@@ -5,6 +5,11 @@
       color="white"
       flat
     >
+      <h1 class="ml-16">Home Budget Planner</h1>
+
+      <v-spacer></v-spacer>
+
+      <sign-out-button />
     </v-app-bar>
 
     <v-main class="grey lighten-3">
@@ -27,8 +32,7 @@
 </template>
 
 <script>
-  export default {
-    data: () => ({
-    }),
-  }
+import SignOutButton from './components/SignOutButton.vue'
+export default {
+  components: { SignOutButton },}
 </script>

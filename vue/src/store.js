@@ -15,11 +15,16 @@ const store = new Vuex.Store({
   mutations: {
     setCurrentUser (state, user) {
       state.currentUser = user;
-      localStorage.setItem('token', user?.token)
-      localStorage.setItem('username', user?.username)
+      localStorage.setItem('token', user.token)
+      localStorage.setItem('username', user.username)
     },
-    signOff() {
-      this.commit("setCurrentUser", null);
+    signOff(state) {
+      state.currentUser = {
+        token: null,
+        username: null
+      }    
+      localStorage.removeItem('token')
+      localStorage.removeItem('username')
     }
   }
 })

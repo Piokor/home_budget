@@ -54,7 +54,7 @@ def get_budgets(current_user):
     shared_budgets = get_budgets_shared_with_user(current_user.id)
     budget_lists = {
         "own": budgets_with_transactions(own_budgets),
-        "shared": budgets_with_transactions(shared_budgets)
+        "shared": budgets_with_transactions(shared_budgets, include_usernames=True)
     }
 
     return make_response(budget_lists, 200)

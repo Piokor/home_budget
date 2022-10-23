@@ -49,6 +49,10 @@
           <p v-if="errorMessageOn" style="color:red; font-size: 0.85em;">
             {{errorMessage}}
           </p>
+
+          <p v-if="showExpired" style="color:red; font-size: 0.85em;">
+            Your session expired. Please log in again.
+          </p>
         </v-form>
         </div>
       </v-tab-item>
@@ -61,7 +65,12 @@ import {register, login} from '@/api/login'
 export default {
   mounted() {
     this.$store.commit('signOff');
+    if(this.$route.query.expired) {
+      this.showExpired = true;
+      this.tab = 1;
+    }
   },
+
   data: () => ({
     valid: false,
     name: '',
@@ -78,11 +87,14 @@ export default {
     tabs: ["Register", "Login"],
     tab: null,
     errorMessageOn: false,
-    failMessage: ""
+    failMessage: "",
+    showExpired: false
   }),
+
   methods: {
     buttonClick() {
       this.errorMessageOn = false;
+      this.showExpired = false;
       this.$refs[`form`][0].validate();
       if(!this.valid) return;
     
@@ -120,6 +132,7 @@ export default {
       this.errorMessageOn = true;
     }
   },
+
   computed: {
     currentTab: function () {
       if(this.tab == 0) {

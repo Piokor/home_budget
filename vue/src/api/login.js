@@ -1,6 +1,6 @@
 import axios from 'axios';
+import { API_URL } from './utils';
 
-export const API_URL = "http://localhost:5000/api";
 export {register, login}
 
 

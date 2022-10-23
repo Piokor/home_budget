@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div v-if="isLoggedIn">
+      <div v-if="$store.state.currentUser && $store.state.currentUser.username">
         <v-icon>
           mdi-account
         </v-icon>
@@ -22,7 +22,7 @@ export default {
       this.$router.push('/login');
     },
     isLoggedIn() {
-      return this.$store.state.currentUser && this.$store.state.currentUser.username;
+      return this.$store.state.currentUser != null && this.$store.state.currentUser.username != null;
     }
   }
 }

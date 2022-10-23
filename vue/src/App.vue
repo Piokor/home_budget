@@ -5,7 +5,9 @@
       color="white"
       flat
     >
-      <h1 class="ml-16">Home Budget Planner</h1>
+      <div @click="$router.push('/');" style="cursor: pointer">
+        <h1 class="ml-16" >Home Budget Planner</h1>
+      </div>
 
       <v-spacer></v-spacer>
 
@@ -18,7 +20,7 @@
           <v-col cols="2"/>
           <v-col>
             <v-sheet
-              min-height="70vh"
+              min-height="80vh"
               rounded="lg"
             >
               <router-view />
@@ -34,5 +36,6 @@
 <script>
 import SignOutButton from './components/SignOutButton.vue'
 export default {
-  components: { SignOutButton },}
+  components: { SignOutButton }
+}
 </script>

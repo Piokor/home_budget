@@ -10,6 +10,7 @@ from home_budget.views.validation import (
     validate_share_budget_params, required_fields, validate_get_budget, required_args
 )
 
+
 @app.route('/api/create_budget', methods=['POST'])
 @required_fields("title")
 @token_required
@@ -25,6 +26,37 @@ def create_budget(current_user):
         return make_response('incorrect parameter format', 400)
 
     return make_response(new_budget.to_json(), 200)
+
+
+@app.route('/api/budget', methods=['GET'])
+@required_args("id")
+@token_required
+def get_budget(current_user):
+    """Get information about a single budget"""
+    budget_id = request.args.get("id")
+
+    valid, message, code = validate_get_budget(current_user, budget_id)
+    if not valid:
+        return make_response(message, code or 400)
+
+    budget = Budget.objects(id=budget_id)[0]
+    budget_dict = budget_with_transactions(budget, True)
+
+    return make_response(budget_dict, 200)
+
+
+@app.route('/api/budgets', methods=['GET'])
+@token_required
+def get_budgets(current_user):
+    """Get list of users budgets and list of budgets shared with him."""
+    own_budgets = Budget.objects(owner_id=current_user.id)
+    shared_budgets = get_budgets_shared_with_user(current_user.id)
+    budget_lists = {
+        "own": budgets_with_transactions(own_budgets),
+        "shared": budgets_with_transactions(shared_budgets, include_usernames=True)
+    }
+
+    return make_response(budget_lists, 200)
 
 
 @app.route('/api/share_budget', methods=['POST'])
@@ -45,34 +77,3 @@ def share_budget(current_user):
     new_sharing.save()
 
     return make_response(new_sharing.to_json(), 200)
-
-
-@app.route('/api/budgets', methods=['GET'])
-@token_required
-def get_budgets(current_user):
-    """Get list of users budgets and list of budgets shared with him."""
-    own_budgets = Budget.objects(owner_id=current_user.id)
-    shared_budgets = get_budgets_shared_with_user(current_user.id)
-    budget_lists = {
-        "own": budgets_with_transactions(own_budgets),
-        "shared": budgets_with_transactions(shared_budgets, include_usernames=True)
-    }
-
-    return make_response(budget_lists, 200)
-
-
-@app.route('/api/budget', methods=['GET'])
-@required_args("id")
-@token_required
-def get_budget(current_user):
-    """Get information about a single budget"""
-    budget_id = request.args.get("id")
-
-    valid, message, code = validate_get_budget(current_user, budget_id)
-    if not valid:
-        return make_response(message, code or 400)
-
-    budget = Budget.objects(id=budget_id)[0]
-    budget_dict = budget_with_transactions(budget, True)
-
-    return make_response(budget_dict, 200)

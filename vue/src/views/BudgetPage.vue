@@ -3,8 +3,21 @@
     <div v-if="budget">
       <BudgetDescription
         :budget="budget"
-        class="mb-5"
       />
+
+      <div 
+        v-if="isOwnBudget" 
+        class="mb-5"
+      >
+        <TransactionCreator 
+          :budgetId="budgetId" 
+          @transactionCreated="getBudget"
+        />
+        
+        <SharingCreator 
+          :budgetId="budgetId"
+        />
+      </div>
 
       <div class="text-h6 mb-4">
         Incomes & Expenses      
@@ -22,17 +35,6 @@
       <TransactionTable
         :transactions="expenses"
         :type="'Expenses'"
-      />
-      
-      <TransactionCreator 
-        v-if="isOwnBudget"
-        :budgetId="budgetId" 
-        @transactionCreated="getBudget"
-      />
-      
-      <SharingCreator 
-        v-if="isOwnBudget"
-        :budgetId="budgetId"
       />
     </div>
 

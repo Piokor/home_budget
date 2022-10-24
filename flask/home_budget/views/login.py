@@ -23,8 +23,6 @@ def signup_user():
 
     try:
         create_user(data['name'], password)
-    except DuplicateKeyError:
-        return make_response('username already taken', 400)
     except NotUniqueError:
         return make_response('username already taken', 400)
     except ValidationError:

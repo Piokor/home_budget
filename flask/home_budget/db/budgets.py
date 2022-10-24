@@ -20,7 +20,7 @@ def budget_with_transactions(budget: Budget, include_username: bool = False) -> 
     budget_dict = json.loads(budget.to_json())
     budget_dict["transactions"] = transactions
     if include_username:
-        budget_dict["owner_name"] = get_budget_owner_name(budget)
+        budget_dict["owner_name"] = _get_budget_owner_name(budget)
 
     return budget_dict
 
@@ -31,7 +31,7 @@ def budgets_with_transactions(budget_list: list[Budget], include_usernames: bool
     return list(with_transactions)
 
 
-def get_budget_owner_name(budget: Budget) -> str:
+def _get_budget_owner_name(budget: Budget) -> str:
     """Returns name of the budget owner"""
     owner_id = budget.owner_id
     try:

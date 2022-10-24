@@ -31,6 +31,10 @@
       :budgetId="budgetId" 
       @transactionCreated="getBudget"
     />
+    
+    <SharingCreator 
+      :budgetId="budgetId"
+    />
   </div>
 </template>
 
@@ -39,10 +43,11 @@ import {getBudget} from '@/api/budgets'
 import BudgetDescription from '../components/BudgetDescription.vue';
 import TransactionCreator from '../components/TransactionCreator.vue';
 import TransactionTable from '../components/TransactionTable.vue';
+import SharingCreator from '../components/SharingCreator.vue';
 export default {
   name: 'App',
 
-  components: {BudgetDescription, TransactionCreator, TransactionTable},
+  components: {BudgetDescription, TransactionCreator, TransactionTable, SharingCreator},
 
   mounted() {
     if(!this.$route.query.id) {
@@ -68,7 +73,7 @@ export default {
       if(res.status == 200) {
         this.budget = res.data;
         this.incomes = res.data.transactions.filter(t => t.type == "income");
-        this.expenses = res.data.transactions.filter(t => t.type == "expenses");
+        this.expenses = res.data.transactions.filter(t => t.type == "expense");
       }
     }
   }

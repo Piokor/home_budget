@@ -94,11 +94,13 @@ def validate_get_budget(current_user: User, budget_id_str: str) -> tuple[bool, O
         return False, "invalid budget id", 400
     budget_id = ObjectId(budget_id_str)
 
-    if not check_if_exists(budget_id, Budget):
+    try:
+        budget = Budget.objects(id=budget_id)[0]
+    except IndexError:
         return False, "budget with given id not found", 400
 
     existing_sharing = BudgetSharing.objects(shared_to_user_id=current_user.id, budget_id=budget_id)
-    if len(existing_sharing) != 0:
+    if current_user.id != budget.owner_id and len(existing_sharing) == 0:
         return False, "given budget is not shared with given user", 400
 
     return True, None, None
@@ -119,7 +121,7 @@ def check_if_exists(id: ObjectId, collection) -> bool:
 
 
 def required_fields(*fields):
-    """Decorator for views functions. Checks if all passed fields are present in a request."""
+    """Decorator for POST views functions. Checks if all required fields are present in a request."""
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -127,6 +129,20 @@ def required_fields(*fields):
             for field in fields:
                 if field not in data:
                     return make_response(f'\"{field}\" parameter is required', 400)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def required_args(*req_args):
+    """Decorator for GET views functions. Checks if all required args are present in a request."""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            data = request.args
+            for field in req_args:
+                if field not in data:
+                    return make_response(f'\"{field}\" arg is required', 400)
             return func(*args, **kwargs)
         return wrapper
     return decorator

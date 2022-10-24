@@ -3,7 +3,7 @@
     <v-app-bar
       app
       color="white"
-      flat
+      outlined
     >
       <div @click="$router.push('/');" style="cursor: pointer">
         <h1 class="ml-16" >Home Budget Planner</h1>
@@ -11,7 +11,7 @@
 
       <v-spacer></v-spacer>
 
-      <sign-out-button />
+      <SignOutButton />
     </v-app-bar>
 
     <v-main class="grey lighten-3">
@@ -22,6 +22,7 @@
             <v-sheet
               min-height="80vh"
               rounded="lg"
+              outlined
             >
               <router-view />
             </v-sheet>

@@ -26,4 +26,14 @@ async function createBudget(title, description) {
     )
 }
 
-export {getBudgets, createBudget, getBudget}
+async function shareBudget(budgetId, otherUserId) {
+    return postRequest(
+        '/share_budget',
+        {
+            budget_id: budgetId,
+            other_user_id: otherUserId
+        }
+    )
+}
+
+export {getBudgets, createBudget, getBudget, shareBudget}

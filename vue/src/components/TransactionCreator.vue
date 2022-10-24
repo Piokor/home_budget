@@ -7,7 +7,7 @@
         <v-btn 
           v-bind="attrs"
           v-on="on"
-          class="mt-5"
+          class="mt-5 mr-3"
         >
             Create new Income/Expense
         </v-btn>

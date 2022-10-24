@@ -1,40 +1,44 @@
 <template>
   <div class="pa-10">
-    <BudgetDescription
-      v-if="budget"
-      :budget="budget"
-      class="mb-5"
-    />
+    <div v-if="budget">
+      <BudgetDescription
+        :budget="budget"
+        class="mb-5"
+      />
 
-    <div class="text-h6 mb-4">
-      Incomes & Expenses
+      <div class="text-h6 mb-4">
+        Incomes & Expenses      
+        <v-icon @click="getBudget">
+          mdi-refresh
+        </v-icon>
+      </div>
     
-      <v-icon @click="getBudget">
-        mdi-refresh
-      </v-icon>
+      <TransactionTable
+        class="mb-5"
+        :transactions="incomes"
+        :type="'Incomes'"
+      />
+    
+      <TransactionTable
+        :transactions="expenses"
+        :type="'Expenses'"
+      />
+      
+      <TransactionCreator 
+        v-if="isOwnBudget"
+        :budgetId="budgetId" 
+        @transactionCreated="getBudget"
+      />
+      
+      <SharingCreator 
+        v-if="isOwnBudget"
+        :budgetId="budgetId"
+      />
     </div>
-  
-    <TransactionTable
-      v-if="budget"
-      class="mb-5"
-      :transactions="incomes"
-      :type="'Incomes'"
-    />
-  
-    <TransactionTable
-      v-if="budget"
-      :transactions="expenses"
-      :type="'Expenses'"
-    />
-    
-    <TransactionCreator 
-      :budgetId="budgetId" 
-      @transactionCreated="getBudget"
-    />
-    
-    <SharingCreator 
-      :budgetId="budgetId"
-    />
+
+    <p style="color:red; font-size: 0.85em;">
+      {{errorMessage}}
+    </p>
   </div>
 </template>
 
@@ -63,17 +67,24 @@ export default {
       budget: null,
       budgetId: null,
       incomes: [],
-      expenses: []
+      expenses: [],
+      isOwnBudget: false,
+      errorMessage: ""
     }
   },
 
   methods: {
     async getBudget() {
+      this.errorMessage = "";
       const res = await getBudget(this.budgetId);
       if(res.status == 200) {
         this.budget = res.data;
         this.incomes = res.data.transactions.filter(t => t.type == "income");
         this.expenses = res.data.transactions.filter(t => t.type == "expense");
+        this.isOwnBudget = 
+          this.$store.state.currentUser.username == this.budget.owner_name;
+      } else {
+        this.errorMessage = res.data;
       }
     }
   }

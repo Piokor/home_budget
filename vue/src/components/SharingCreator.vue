@@ -29,6 +29,10 @@
           <v-btn class="mt-3" @click="shareBudget">
             Share budget
           </v-btn>
+
+          <p style="color:red; font-size: 0.85em;">
+            {{errorMessage}}
+          </p>
         </v-form>
       </v-card>
     </v-dialog>    
@@ -50,16 +54,21 @@ export default {
       ],
       usernamesList: [],
       searchInput: "",
-      usersData: null
+      usersData: null,
+      errorMessage: ""
     }
   },
 
   methods: {
     async shareBudget(){
+      this.errorMessage = "";
       const targetUserId = this.getSelectedUserId()
       const res = await shareBudget(this.budgetId, targetUserId);
       if(res.status == 200) {
-        this.dialaog = false;
+        this.dialog = false;
+      }
+      else {
+        this.errorMessage = res.data;
       }
     },
     async updateUsernameList(){

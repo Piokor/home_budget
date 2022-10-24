@@ -60,6 +60,10 @@
           <v-btn @click="createBudget" class="mt-3">
             Create {{type}}
           </v-btn>
+
+          <p style="color:red; font-size: 0.85em;">
+            {{errorMessage}}
+          </p>
         </v-form>
       </v-card>
     </v-dialog>    
@@ -74,28 +78,35 @@ export default {
     return {
       dialog: false,
       valid: false,
+      errorMessage: "",
+
       title: '',
       titleRules: [
         v => !!v || 'Title is required',
         v => (v && v.length >= 1 && v.length <= 200) || 'Title must be shorter than 200 characters',
       ],
+
       type: '',
       typeRules: [v => !!v || 'Type is required'],
+
       amount: '',
       amountRules: [
         v => !!v || 'Amount is required',
         v => (v && !isNaN(parseFloat(v))) || 'Amount must be a number',
         v => (v && (v.split(".").length == 1 || v.split(".")[1].length <= 2)) || `Amount can't have more than 2 decimal places`
       ],
+
       category: '',
       categoryRules: [v => !!v || 'Category is required (select type first)'],
+
       currency: '',
-      currencyRules: [v => !!v || 'Currency is required'],
+      currencyRules: [v => !!v || 'Currency is required']
     }
   },
 
   methods: {
     async createBudget() {
+      this.errorMessage = "";
       this.$refs[`form`].validate();
       if(!this.valid) return;
 
@@ -110,6 +121,8 @@ export default {
       if(res.status == 200) {
         this.dialog = false;
         this.$emit("transactionCreated");
+      } else {
+        this.errorMessage = res.data;
       }
     }
   },
